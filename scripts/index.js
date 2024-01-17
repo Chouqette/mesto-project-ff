@@ -1,7 +1,7 @@
-const cardTemplate = document.querySelector("#card-template").content;
+const cardTemplate = document.getElementById("card-template").content;
 const cardList = document.querySelector(".places__list");
 
-const createCard = (cardData) => {
+const createCard = (cardData, likeHandler, deleteHandler) => {
   const cardElem = cardTemplate.cloneNode(true);
 
   const imageElem = cardElem.querySelector(".card__image");
@@ -10,18 +10,24 @@ const createCard = (cardData) => {
   const deleteButtonElem = cardElem.querySelector(".card__delete-button");
 
   imageElem.src = cardData.link;
-  imageElem.alt = "Живописный пейзаж";
+  imageElem.alt = cardData.name;
   titleElem.textContent = cardData.name;
 
-  likeButtonElem.addEventListener("click", (event) => {
-    event.target.classList.toggle("card__like-button_is-active");
-  });
-
-  deleteButtonElem.addEventListener("click", () => {
-    cardElem.remove();
-  });
+  likeButtonElem.addEventListener("click", likeHandler);
+  deleteButtonElem.addEventListener("click", deleteHandler);
 
   return cardElem;
+};
+
+const likeCard = (event) => {
+  event.target.classList.toggle("card__like-button_is-active");
+};
+
+const deleteCard = (event) => {
+  const cardElem = event.target.closest(".card");
+  if (cardElem) {
+    cardElem.remove();
+  }
 };
 
 const appendCardToDOM = (cardElem) => {
@@ -31,14 +37,11 @@ const appendCardToDOM = (cardElem) => {
 cardList.addEventListener("click", (event) => {
   const deleteButtonElem = event.target.closest(".card__delete-button");
   if (deleteButtonElem) {
-    const cardElem = deleteButtonElem.closest(".card");
-    if (cardElem) {
-      cardElem.remove();
-    }
+    deleteCard(event);
   }
 });
 
 initialCards.forEach((cardData) => {
-  const cardElem = createCard(cardData);
+  const cardElem = createCard(cardData, likeCard, deleteCard);
   appendCardToDOM(cardElem);
 });
