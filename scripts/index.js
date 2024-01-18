@@ -34,13 +34,6 @@ const appendCardToDOM = (cardElem) => {
   cardList.append(cardElem);
 };
 
-cardList.addEventListener("click", (event) => {
-  const deleteButtonElem = event.target.closest(".card__delete-button");
-  if (deleteButtonElem) {
-    deleteCard(event);
-  }
-});
-
 initialCards.forEach((cardData) => {
   const cardElem = createCard(cardData, likeCard, deleteCard);
   appendCardToDOM(cardElem);
