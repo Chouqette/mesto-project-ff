@@ -20,8 +20,8 @@ const profileDescription = document.querySelector(".profile__description");
 const updateProfile = (evt) => {
   evt.preventDefault();
 
-  let nameInfoValue = nameInfo.value;
-  let descriptionInfoValue = descriptionInfo.value;
+  const nameInfoValue = nameInfo.value;
+  const descriptionInfoValue = descriptionInfo.value;
 
   profileTitle.textContent = nameInfoValue;
   profileDescription.textContent = descriptionInfoValue;
@@ -38,8 +38,9 @@ const addNewPlace = (evt) => {
   const cardElem = createCard(newCard, likeCard, deleteCard, openPopupImage);
   appendCardToDOM(cardElem);
 
-  placeInfoValue = "";
-  urlInfoValue = "";
+  const addForm = document.forms['new-place'];
+  addForm.reset();
+  
   closePopup(popupNewPlace);
 };
 
@@ -75,8 +76,6 @@ popupEdit.addEventListener("submit", updateProfile);
 
 profileAddButton.addEventListener("click", () => openPopup(popupNewPlace));
 popupNewPlace.addEventListener("submit", addNewPlace);
-
-document.addEventListener("keydown", closeEsc);
 
 closeButton.forEach((closeButton) => {
   closeButton.addEventListener("click", () => {

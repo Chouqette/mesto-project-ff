@@ -13,12 +13,10 @@ const closeModal = (modal) => {
 };
 
 const closeEsc = (event) => {
-    if (event.keyCode === 27) {
+    if (event.key === 'Escape' || event.key === 'Esc') {
         const openedPopup = document.querySelector(".popup_is-opened");
         closeModal(openedPopup);
     }
 };
-
-document.addEventListener("keydown", closeEsc);
 
 export { openModal, closeModal, closeEsc };
