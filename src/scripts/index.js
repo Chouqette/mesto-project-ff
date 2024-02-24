@@ -1,7 +1,7 @@
 import "../pages/index.css";
 import initialCards from "./cards.js";
 import { createCard, likeCard, deleteCard, appendCardToDOM } from '../components/card.js';
-import { openModal, closeModal, closeEsc } from '../components/modal.js';
+import { openModal, closeModal } from '../components/modal.js';
 
 const cardTemplate = document.getElementById("card-template").content;
 const cardList = document.querySelector(".places__list");
@@ -31,8 +31,8 @@ const updateProfile = (evt) => {
 const addNewPlace = (evt) => {
   evt.preventDefault();
 
-  let placeInfoValue = document.querySelector(".popup__input_type_card-name").value;
-  let urlInfoValue = document.querySelector(".popup__input_type_url").value;
+  const placeInfoValue = document.querySelector(".popup__input_type_card-name").value;
+  const urlInfoValue = document.querySelector(".popup__input_type_url").value;
 
   const newCard = { name: placeInfoValue, link: urlInfoValue };
   const cardElem = createCard(newCard, likeCard, deleteCard, openPopupImage);
