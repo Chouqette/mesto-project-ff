@@ -70,7 +70,6 @@ const cardDeleting = (cardId) => {
   });
 }
 
-
 const liking = (cardId) => {
   return fetch(`${BASE.URL}/cards/likes/${cardId}`, {
     method: 'PUT',
@@ -87,34 +86,4 @@ const disliking = (cardId) => {
   .then(res => checkResponse(res));
 }
 
-const updateCardLikesStatus = (cardId, isLiked) => {
-  const method = isLiked ? 'PUT' : 'DELETE';
-
-  return fetch(`${BASE.URL}/cards/likes/${cardId}`, {
-      method,
-      headers: BASE.headers,
-  })
-  .then(checkResponse)
-  .then((updatedCardData) => {
-      console.log(`Likes status updated for card ${cardId}:`, updatedCardData);
-  })
-  .catch((error) => {
-      console.error(`Error updating likes status for card ${cardId}:`, error);
-      throw error;
-  });
-};
-
-const getCurrentUser = () => {
-  return fetch(`${BASE.URL}/users/me`, {
-    headers: BASE.headers,
-  })
-    .then(checkResponse)
-    .then((userData) => {
-      return userData;
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-};
-
-export { getInitialCards, getUser, editUser, addCard, liking, disliking, updateCardLikesStatus, cardDeleting, getCurrentUser };
+export { getInitialCards, getUser, editUser, addCard, liking, disliking, cardDeleting };

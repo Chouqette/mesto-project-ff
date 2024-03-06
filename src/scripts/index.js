@@ -4,6 +4,8 @@ import { createCard, likeCard, deleteCard, appendCardToDOM } from "../components
 import { openModal, closeModal } from "../components/modal.js";
 import { enableValidation, clearValidation } from "./validation.js";
 
+let userId = '';
+
 const cardTemplate = document.getElementById("card-template").content;
 const cardList = document.querySelector(".places__list");
 
@@ -64,7 +66,6 @@ const addNewPlace = (evt) => {
       const newCardElem = createCard(data, likeCard, deleteCard, openPopupImage);
       appendCardToDOM(newCardElem);
 
-      // Вывод информации о новой карточке в консоль
       console.log("New card added:", data);
 
       const newForm = document.forms['new-place'];
@@ -109,8 +110,10 @@ Promise.all([getInitialCards(), getUser()])
   .then(([initialCards, userData]) => {
     profileTitle.textContent = userData.name;
     profileDescription.textContent = userData.about;
+    userId = userData._id;
+
     initialCards.forEach((cardData) => {
-      const cardElem = createCard(cardData, likeCard, deleteCard, openPopupImage);
+      const cardElem = createCard(cardData, likeCard, deleteCard, openPopupImage, userId);
       appendCardToDOM(cardElem);
     });
   })
