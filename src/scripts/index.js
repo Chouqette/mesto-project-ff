@@ -1,5 +1,5 @@
 import "../pages/index.css";
-import { getInitialCards, getUser, editUser, addCard, liking, disliking, updateCardLikesStatus, cardDeleting } from "./api.js";
+import { getInitialCards, getUser, editUser, addCard, liking, disliking, cardDeleting } from "./api.js";
 import { createCard, likeCard, deleteCard, appendCardToDOM } from "../components/card.js";
 import { openModal, closeModal } from "../components/modal.js";
 import { enableValidation, clearValidation } from "./validation.js";
