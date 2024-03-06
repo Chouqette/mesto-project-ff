@@ -23,6 +23,14 @@ const createCard = (
   titleElem.textContent = cardData.name;
   likeCounterElem.textContent = cardData.likes.length;
 
+  // Проверяем, есть ли лайк пользователя в массиве likes
+  const isUserLiked = cardData.likes.some((like) => like._id === userId);
+
+  // Если лайк пользователя найден, применяем класс
+  if (isUserLiked) {
+    likeButtonElem.classList.add("card__like-button_is-active");
+  }
+
   likeButtonElem.addEventListener("click", (event) => {
     likeHandler(event, likeButtonElem, cardData, likeCounterElem);
   });
