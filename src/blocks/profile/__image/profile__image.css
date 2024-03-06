@@ -12,13 +12,14 @@
 }
 
 .profile__image::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   right: 50%;
   transform: translate(50%, -40%);
   opacity: 0;
-  background: transparent url('../../../images/avatar-edit-icon.svg') center no-repeat;
+  background: transparent url("../../../images/avatar-edit-icon.svg") center
+    no-repeat;
   transition: all 0.7s ease;
   cursor: pointer;
   inline-size: 26px;
@@ -31,7 +32,7 @@
 }
 
 .profile__image::after {
-  content: '';
+  content: "";
   position: absolute;
   display: block;
   width: 100%;

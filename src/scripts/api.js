@@ -60,30 +60,47 @@ const addCard = ({ name, link }) => {
 
 const cardDeleting = (cardId) => {
   return fetch(`${BASE.URL}/cards/${cardId}`, {
-      method: 'DELETE',
-      headers: BASE.headers,
+    method: "DELETE",
+    headers: BASE.headers,
   })
-  .then(res => checkResponse(res))
-  .catch((error) => {
+    .then((res) => checkResponse(res))
+    .catch((error) => {
       console.error(`Error deleting card ${cardId}:`, error);
       throw error;
-  });
-}
+    });
+};
 
 const liking = (cardId) => {
   return fetch(`${BASE.URL}/cards/likes/${cardId}`, {
-    method: 'PUT',
+    method: "PUT",
     headers: BASE.headers,
-  })
-  .then(res => checkResponse(res));
-}
+  }).then((res) => checkResponse(res));
+};
 
 const disliking = (cardId) => {
   return fetch(`${BASE.URL}/cards/likes/${cardId}`, {
-    method: 'DELETE',
+    method: "DELETE",
     headers: BASE.headers,
-  })
-  .then(res => checkResponse(res));
-}
+  }).then((res) => checkResponse(res));
+};
 
-export { getInitialCards, getUser, editUser, addCard, liking, disliking, cardDeleting };
+const editAvatar = (avatar) => {
+  return fetch(`${BASE.URL}/users/me/avatar`, {
+    method: "PATCH",
+    headers: BASE.headers,
+    body: JSON.stringify({
+      avatar,
+    }),
+  }).then((res) => checkResponse(res));
+};
+
+export {
+  getInitialCards,
+  getUser,
+  editUser,
+  addCard,
+  liking,
+  disliking,
+  cardDeleting,
+  editAvatar,
+};

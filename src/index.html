@@ -122,22 +122,28 @@
           </form>
         </div>
       </div>
-
-      <!-- обновление аватара -->
       <div class="popup popup_type_edit_avatar popup_is-animated">
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Обновить аватар</h3>
           <form class="popup__form" name="edit-avatar" novalidate>
             <div class="popup__field">
-              <input id="url-avatar-input" type="url" name="link" class="popup__input popup__input_type_avatar" placeholder="Ссылка на картинку" required />
+              <input
+                id="url-avatar-input"
+                type="url"
+                name="link"
+                class="popup__input popup__input_type_avatar"
+                placeholder="Ссылка на картинку"
+                required
+              />
               <span class="url-avatar-input-error popup__input-error"></span>
             </div>
-            <button type="submit" class="button popup__button">Сохранить</button>
+            <button type="submit" class="button popup__button">
+              Сохранить
+            </button>
           </form>
         </div>
       </div>
-
 
       <div class="popup popup_type_delete_card popup_is-animated">
         <div class="popup__content">
