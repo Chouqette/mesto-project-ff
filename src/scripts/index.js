@@ -23,9 +23,25 @@ const profileEditButton = document.querySelector(".profile__edit-button");
 const profileAddButton = document.querySelector(".profile__add-button");
 const popupEdit = document.querySelector(".popup_type_edit");
 const popupNewPlace = document.querySelector(".popup_type_new-card");
+
+/* добавки */
+const popupTypeEditProfile = document.querySelector('.popup_type_edit');
+const popupTypeEditAvatar = document.querySelector('.popup_type_edit_avatar');
+const popupTypeNewCard = document.querySelector('.popup_type_new-card');
+const popupTypeDeleteCard = document.querySelector('.popup_type_delete_card')
+const popupTypeImage = document.querySelector('.popup_type_image')
+
+
+const formDeleteCard = popupTypeDeleteCard.querySelector('.popup__form')
+const formEditAvatar = popupTypeEditAvatar.querySelector('.popup__form')
+const avatarInput = formEditAvatar.querySelector('.popup__input_type_avatar')
+const formNewCard = popupTypeNewCard.querySelector('.popup__form')
+
+
 const closeButton = document.querySelectorAll(".popup__close");
 const nameInfo = document.querySelector(".popup__input_type_name");
 const descriptionInfo = document.querySelector(".popup__input_type_description");
+const profileImage = document.querySelector('.profile__image');
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const formEditProfile = popupEdit.querySelector('.popup__form');
@@ -51,7 +67,6 @@ const validationClearValidation = {
 document.addEventListener('DOMContentLoaded', () => {
   enableValidation(validationEnableValidation);
 });
-
 
 closeButton.forEach((closeButton) => {
   closeButton.addEventListener("click", () => {
@@ -123,6 +138,10 @@ const closePopup = (popup) => {
   closeModal(popup);
 };
 
+profileImage.addEventListener('click', () => {
+  clearValidation(formNewCard, validationClearValidation);
+  openPopup(popupTypeEditAvatar);
+})
 
 profileEditButton.addEventListener("click", () => {
   clearValidation(formEditProfile, validationClearValidation);
@@ -132,7 +151,9 @@ profileEditButton.addEventListener("click", () => {
 popupEdit.addEventListener("submit", updateProfile);
 
 profileAddButton.addEventListener("click", () => {
+  clearValidation(formNewCard, validationClearValidation)
   openPopup(popupNewPlace);
 });
 
 popupNewPlace.addEventListener("submit", addNewPlace);
+
