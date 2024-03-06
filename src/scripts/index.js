@@ -52,18 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
   enableValidation(validationEnableValidation);
 });
 
-profileEditButton.addEventListener("click", () => {
-  clearValidation(formEditProfile, validationClearValidation);
-  openPopup(popupEdit);
-});
-
-popupEdit.addEventListener("submit", updateProfile);
-
-profileAddButton.addEventListener("click", () => {
-  openPopup(popupNewPlace);
-});
-
-popupNewPlace.addEventListener("submit", addNewPlace);
 
 closeButton.forEach((closeButton) => {
   closeButton.addEventListener("click", () => {
@@ -134,3 +122,17 @@ const openPopup = (popup) => {
 const closePopup = (popup) => {
   closeModal(popup);
 };
+
+
+profileEditButton.addEventListener("click", () => {
+  clearValidation(formEditProfile, validationClearValidation);
+  openPopup(popupEdit);
+});
+
+popupEdit.addEventListener("submit", updateProfile);
+
+profileAddButton.addEventListener("click", () => {
+  openPopup(popupNewPlace);
+});
+
+popupNewPlace.addEventListener("submit", addNewPlace);
