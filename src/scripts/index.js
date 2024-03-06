@@ -12,8 +12,8 @@ import { enableValidation, clearValidation } from "./validation.js";
 
 let userId = "";
 let currentAvatar = "";
-let currentCard = ""
-let cardElement = null
+let currentCard = "";
+let cardElement = null;
 
 // Элементы DOM
 const profileEditButton = document.querySelector(".profile__edit-button");
@@ -25,7 +25,6 @@ const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeDeleteCard = document.querySelector('.popup_type_delete_card');
 const formNewCard = popupTypeNewCard.querySelector(".popup__form");
 const formEditAvatar = popupTypeEditAvatar.querySelector(".popup__form");
-const formDeleteCard = popupTypeDeleteCard.querySelector('.popup__form');
 const avatarInput = formEditAvatar.querySelector(".popup__input_type_avatar");
 const formEditProfile = popupEdit.querySelector(".popup__form");
 const closeButton = document.querySelectorAll(".popup__close");
@@ -144,7 +143,6 @@ const addNewPlace = (evt) => {
 
 popupNewPlace.addEventListener('submit', addNewPlace);
 
-
 const openPopupImage = (imageData) => {
   const popupImage = document.querySelector(".popup_type_image");
   const popupImageElement = popupImage.querySelector(".popup__image");
@@ -172,10 +170,9 @@ const closePopup = (popup) => {
 
 const updateAvatar = (evt) => {
   evt.preventDefault();
+  const avatar = avatarInput.value;
   const formButton = formEditAvatar.querySelector('.popup__button');
   const originalButtonText = formButton.textContent;
-
-  const avatar = avatarInput.value;
 
   loading(formButton, 'Сохранение...');
 
@@ -193,6 +190,8 @@ const updateAvatar = (evt) => {
       loading(formButton, originalButtonText);
     });
 };
+
+popupTypeEditAvatar.addEventListener('submit', updateAvatar);
 
 window.addEventListener("load", () => {
   if (currentAvatar) {
@@ -230,7 +229,7 @@ profileAddButton.addEventListener("click", () => {
   openPopup(popupNewPlace);
 });
 
-popupNewPlace.addEventListener("submit", addNewPlace);
+popupTypeDeleteCard.addEventListener('submit', deleteFormSubmitting);
 
 const deleteFormSubmitting = (evt) => {
   evt.preventDefault();
@@ -239,7 +238,7 @@ const deleteFormSubmitting = (evt) => {
 
   loading(formButton, 'Удаление...');
 
-  cardDeleting(currentCard)
+  api.cardDeleting(currentCard)
     .then(() => {
       closePopup(popupTypeDeleteCard);
       deleteCard(cardElement);
@@ -254,4 +253,4 @@ const deleteFormSubmitting = (evt) => {
     });
 };
 
-formDeleteCard.addEventListener('submit', deleteFormSubmitting);
+popupTypeDeleteCard.addEventListener('submit', deleteFormSubmitting);

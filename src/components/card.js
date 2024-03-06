@@ -94,7 +94,7 @@ const deleteCard = (event, cardData, cardDeleting) => {
 
 const appendCardToDOM = (cardElem) => {
   const cardList = document.querySelector(".places__list");
-  cardList.append(cardElem);
+  cardList.prepend(cardElem);
 };
 
 export { createCard, likeCard, deleteCard, appendCardToDOM };

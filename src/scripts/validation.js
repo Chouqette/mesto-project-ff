@@ -1,53 +1,33 @@
-const showError = (
-  formElement,
-  inputElement,
-  errorMessage,
-  inputErrorClass,
-  errorClass
-) => {
+const showError = (formElement, inputElement, inputErrorClass, errorClass) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  if (!errorElement) return;
-
-  inputElement.classList.add(inputErrorClass);
-  errorElement.classList.add(errorClass);
-  errorElement.textContent = errorMessage;
+  if (errorElement) {
+    inputElement.classList.add(inputErrorClass);
+    errorElement.classList.add(errorClass);
+    errorElement.textContent = inputElement.validationMessage;
+  }
 };
 
 const hideError = (formElement, inputElement, inputErrorClass, errorClass) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  if (!errorElement) return;
-
-  inputElement.classList.remove(inputErrorClass);
-  errorElement.classList.remove(errorClass);
-  errorElement.textContent = "";
+  if (errorElement) {
+    inputElement.classList.remove(inputErrorClass);
+    errorElement.classList.remove(errorClass);
+    errorElement.textContent = "";
+  }
 };
 
-const checkValidity = (
-  formElement,
-  inputElement,
-  inputErrorClass,
-  errorClass
-) => {
+const checkValidity = (formElement, inputElement, inputErrorClass, errorClass) => {
   const regex = /[^а-яёa-z\-\s]+/i;
   const inputStr = inputElement.value;
-  if (regex.test(inputStr) && inputElement.getAttribute("type") !== "url") {
-    inputElement.setCustomValidity(inputElement.dataset.errorMessage);
-  } else {
-    inputElement.setCustomValidity("");
-  }
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  if (!errorElement) return;
+  inputElement.setCustomValidity(regex.test(inputStr) && inputElement.getAttribute("type") !== "url"
+    ? inputElement.dataset.errorMessage
+    : "");
 
-  if (!inputElement.validity.valid) {
-    showError(
-      formElement,
-      inputElement,
-      inputElement.validationMessage,
-      inputErrorClass,
-      errorClass
-    );
-  } else {
-    hideError(formElement, inputElement, inputErrorClass, errorClass);
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  if (errorElement) {
+    inputElement.validity.valid
+      ? hideError(formElement, inputElement, inputErrorClass, errorClass)
+      : showError(formElement, inputElement, inputErrorClass, errorClass);
   }
 };
 
@@ -61,24 +41,31 @@ const setListeners = (
 ) => {
   const inputList = Array.from(formElement.querySelectorAll(inputSelector));
   const buttonElement = formElement.querySelector(submitButtonSelector);
-  toggleButtonState(inputList, buttonElement, inactiveButtonClass);
+
+  const updateValidation = () => {
+    inputList.forEach((input) => checkValidity(formElement, input, inputErrorClass, errorClass));
+    toggleButtonState(inputList, buttonElement, inactiveButtonClass);
+  };
+
   inputList.forEach((input) => {
-    input.addEventListener("input", () => {
-      checkValidity(formElement, input, inputErrorClass, errorClass);
-      toggleButtonState(inputList, buttonElement, inactiveButtonClass);
-    });
+    input.addEventListener("input", updateValidation);
   });
+
+  formElement.addEventListener("reset", () => {
+    inputList.forEach((input) => hideError(formElement, input, inputErrorClass, errorClass));
+    toggleButtonState(inputList, buttonElement, inactiveButtonClass);
+  });
+
+  updateValidation();
 };
 
-const hasInvalidInput = (inputList) =>
-  inputList.some((input) => !input.validity.valid);
+const hasInvalidInput = (inputList) => inputList.some((input) => !input.validity.valid);
 
 const toggleButtonState = (inputList, buttonElement, inactiveButtonClass) => {
-  buttonElement.disabled = hasInvalidInput(inputList);
-  buttonElement.classList.toggle(
-    inactiveButtonClass,
-    hasInvalidInput(inputList)
-  );
+  if (buttonElement) {
+    buttonElement.disabled = hasInvalidInput(inputList);
+    buttonElement.classList.toggle(inactiveButtonClass, hasInvalidInput(inputList));
+  }
 };
 
 const enableValidation = ({
@@ -113,12 +100,13 @@ const clearValidation = (
 ) => {
   const inputList = Array.from(formElement.querySelectorAll(inputSelector));
   const buttonElement = formElement.querySelector(submitButtonSelector);
+
   inputList.forEach((input) => {
     input.setCustomValidity("");
     hideError(formElement, input, inputErrorClass, errorClass);
   });
-  if (buttonElement)
-    toggleButtonState(inputList, buttonElement, inactiveButtonClass);
+
+  toggleButtonState(inputList, buttonElement, inactiveButtonClass);
 };
 
 export { enableValidation, clearValidation };

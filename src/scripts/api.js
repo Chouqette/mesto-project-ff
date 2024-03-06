@@ -20,6 +20,7 @@ const getUser = () => {
     })
     .catch((error) => {
       console.error(error);
+      throw error;
     });
 };
 
@@ -33,6 +34,7 @@ const getInitialCards = () => {
     })
     .catch((error) => {
       console.error("Error:", error);
+      throw error;
     });
 };
 
@@ -44,7 +46,12 @@ const editUser = ({ name, about }) => {
       name,
       about,
     }),
-  }).then((res) => checkResponse(res));
+  })
+    .then(checkResponse)
+    .catch((error) => {
+      console.error("Error editing user:", error);
+      throw error;
+    });
 };
 
 const addCard = ({ name, link }) => {
@@ -55,7 +62,12 @@ const addCard = ({ name, link }) => {
       name,
       link,
     }),
-  }).then((res) => checkResponse(res));
+  })
+    .then(checkResponse)
+    .catch((error) => {
+      console.error("Error adding card:", error);
+      throw error;
+    });
 };
 
 const cardDeleting = (cardId) => {
@@ -63,7 +75,7 @@ const cardDeleting = (cardId) => {
     method: "DELETE",
     headers: BASE.headers,
   })
-    .then((res) => checkResponse(res))
+    .then(checkResponse)
     .catch((error) => {
       console.error(`Error deleting card ${cardId}:`, error);
       throw error;
@@ -74,14 +86,24 @@ const liking = (cardId) => {
   return fetch(`${BASE.URL}/cards/likes/${cardId}`, {
     method: "PUT",
     headers: BASE.headers,
-  }).then((res) => checkResponse(res));
+  })
+    .then(checkResponse)
+    .catch((error) => {
+      console.error(`Error liking card ${cardId}:`, error);
+      throw error;
+    });
 };
 
 const disliking = (cardId) => {
   return fetch(`${BASE.URL}/cards/likes/${cardId}`, {
     method: "DELETE",
     headers: BASE.headers,
-  }).then((res) => checkResponse(res));
+  })
+    .then(checkResponse)
+    .catch((error) => {
+      console.error(`Error disliking card ${cardId}:`, error);
+      throw error;
+    });
 };
 
 const editAvatar = (avatar) => {
@@ -91,7 +113,12 @@ const editAvatar = (avatar) => {
     body: JSON.stringify({
       avatar,
     }),
-  }).then((res) => checkResponse(res));
+  })
+    .then(checkResponse)
+    .catch((error) => {
+      console.error("Error editing avatar:", error);
+      throw error;
+    });
 };
 
 export {
