@@ -3,7 +3,8 @@ const createCard = (
   likeHandler,
   deleteHandler,
   imageClickHandler,
-  userId
+  userId,
+  cardDeleting
 ) => {
   const cardTemplate = document.getElementById("card-template").content;
   const cardElem = cardTemplate.cloneNode(true);
@@ -23,7 +24,9 @@ const createCard = (
     likeHandler(event, likeButtonElem, cardData, likeCounterElem);
   });
 
-  deleteButtonElem.addEventListener("click", deleteHandler);
+  deleteButtonElem.addEventListener("click", (event) => {
+    deleteHandler(event, cardData, cardDeleting);
+  });
 
   if (imageClickHandler) {
     imageElem.addEventListener("click", () => {
@@ -31,7 +34,7 @@ const createCard = (
     });
   }
 
-  const isVisible = checkVisibleDeleteButton(cardData, userId);  
+  const isVisible = checkVisibleDeleteButton(cardData, userId);
   if (isVisible) {
     changeVisibleDeleteButton(deleteButtonElem);
     deleteButtonElem.addEventListener("click", () =>
@@ -42,14 +45,13 @@ const createCard = (
   return cardElem;
 };
 
-function checkVisibleDeleteButton(cardData, userId) {
+const checkVisibleDeleteButton = (cardData, userId) => {
   return cardData.owner._id === userId;
-}
+};
 
-function changeVisibleDeleteButton(deleteButtonElem) {
+const changeVisibleDeleteButton = (deleteButtonElem) => {
   deleteButtonElem.setAttribute("style", "display: block;");
-}
-
+};
 
 const likeCard = (event, likeButtonElem, cardData, likeCounterElem) => {
   const isLiked = likeButtonElem.classList.toggle(
@@ -61,10 +63,17 @@ const likeCard = (event, likeButtonElem, cardData, likeCounterElem) => {
     : cardData.likes.length;
 };
 
-const deleteCard = (event) => {
+const deleteCard = (event, cardData, cardDeleting) => {
   const cardElem = event.target.closest(".card");
   if (cardElem) {
-    cardElem.remove();
+    const cardId = cardData._id;
+    cardDeleting(cardId)
+      .then(() => {
+        cardElem.remove();
+      })
+      .catch((error) => {
+        console.error("Error deleting card:", error);
+      });
   }
 };
 
