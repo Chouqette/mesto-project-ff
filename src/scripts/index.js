@@ -22,7 +22,6 @@ const popupEdit = document.querySelector(".popup_type_edit");
 const popupNewPlace = document.querySelector(".popup_type_new-card");
 const popupTypeEditAvatar = document.querySelector(".popup_type_edit_avatar");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
-const popupTypeDeleteCard = document.querySelector(".popup_type_delete_card");
 const formNewCard = popupTypeNewCard.querySelector(".popup__form");
 const formEditAvatar = popupTypeEditAvatar.querySelector(".popup__form");
 const avatarInput = formEditAvatar.querySelector(".popup__input_type_avatar");
@@ -239,30 +238,3 @@ profileAddButton.addEventListener("click", () => {
   clearValidation(formNewCard, validationClearValidation);
   openPopup(popupNewPlace);
 });
-
-popupTypeDeleteCard.addEventListener("submit", deleteFormSubmitting);
-
-const deleteFormSubmitting = (evt) => {
-  evt.preventDefault();
-  const formButton = formDeleteCard.querySelector(".popup__button");
-  const originalButtonText = formButton.textContent;
-
-  loading(formButton, "Удаление...");
-
-  api
-    .cardDeleting(currentCard)
-    .then(() => {
-      closePopup(popupTypeDeleteCard);
-      deleteCard(cardElement);
-      currentCard = "";
-      cardElement = null;
-    })
-    .catch((err) => {
-      console.log(`Ошибка: ${err}`);
-    })
-    .finally(() => {
-      loading(formButton, originalButtonText);
-    });
-};
-
-popupTypeDeleteCard.addEventListener("submit", deleteFormSubmitting);
