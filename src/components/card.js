@@ -1,6 +1,5 @@
 import * as api from "../scripts/api.js";
 
-
 const createCard = (
   cardData,
   likeHandler,
@@ -65,7 +64,9 @@ const changeVisibleDeleteButton = (deleteButtonElem) => {
 };
 
 const likeCard = (event, likeButtonElem, cardData, likeCounterElem) => {
-  const isLiked = likeButtonElem.classList.toggle("card__like-button_is-active");
+  const isLiked = likeButtonElem.classList.toggle(
+    "card__like-button_is-active"
+  );
 
   const likeAction = isLiked ? api.liking : api.disliking;
 

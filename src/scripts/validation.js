@@ -16,12 +16,19 @@ const hideError = (formElement, inputElement, inputErrorClass, errorClass) => {
   }
 };
 
-const checkValidity = (formElement, inputElement, inputErrorClass, errorClass) => {
+const checkValidity = (
+  formElement,
+  inputElement,
+  inputErrorClass,
+  errorClass
+) => {
   const regex = /[^а-яёa-z\-\s]+/i;
   const inputStr = inputElement.value;
-  inputElement.setCustomValidity(regex.test(inputStr) && inputElement.getAttribute("type") !== "url"
-    ? inputElement.dataset.errorMessage
-    : "");
+  inputElement.setCustomValidity(
+    regex.test(inputStr) && inputElement.getAttribute("type") !== "url"
+      ? inputElement.dataset.errorMessage
+      : ""
+  );
 
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   if (errorElement) {
@@ -43,7 +50,9 @@ const setListeners = (
   const buttonElement = formElement.querySelector(submitButtonSelector);
 
   const updateValidation = () => {
-    inputList.forEach((input) => checkValidity(formElement, input, inputErrorClass, errorClass));
+    inputList.forEach((input) =>
+      checkValidity(formElement, input, inputErrorClass, errorClass)
+    );
     toggleButtonState(inputList, buttonElement, inactiveButtonClass);
   };
 
@@ -52,19 +61,25 @@ const setListeners = (
   });
 
   formElement.addEventListener("reset", () => {
-    inputList.forEach((input) => hideError(formElement, input, inputErrorClass, errorClass));
+    inputList.forEach((input) =>
+      hideError(formElement, input, inputErrorClass, errorClass)
+    );
     toggleButtonState(inputList, buttonElement, inactiveButtonClass);
   });
 
   updateValidation();
 };
 
-const hasInvalidInput = (inputList) => inputList.some((input) => !input.validity.valid);
+const hasInvalidInput = (inputList) =>
+  inputList.some((input) => !input.validity.valid);
 
 const toggleButtonState = (inputList, buttonElement, inactiveButtonClass) => {
   if (buttonElement) {
     buttonElement.disabled = hasInvalidInput(inputList);
-    buttonElement.classList.toggle(inactiveButtonClass, hasInvalidInput(inputList));
+    buttonElement.classList.toggle(
+      inactiveButtonClass,
+      hasInvalidInput(inputList)
+    );
   }
 };
 

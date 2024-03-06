@@ -22,7 +22,7 @@ const popupEdit = document.querySelector(".popup_type_edit");
 const popupNewPlace = document.querySelector(".popup_type_new-card");
 const popupTypeEditAvatar = document.querySelector(".popup_type_edit_avatar");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
-const popupTypeDeleteCard = document.querySelector('.popup_type_delete_card');
+const popupTypeDeleteCard = document.querySelector(".popup_type_delete_card");
 const formNewCard = popupTypeNewCard.querySelector(".popup__form");
 const formEditAvatar = popupTypeEditAvatar.querySelector(".popup__form");
 const avatarInput = formEditAvatar.querySelector(".popup__input_type_avatar");
@@ -114,34 +114,44 @@ const updateProfile = async (evt) => {
 
 const addNewPlace = (evt) => {
   evt.preventDefault();
-  const formButton = formNewCard.querySelector('.popup__button');
+  const formButton = formNewCard.querySelector(".popup__button");
   const originalButtonText = formButton.textContent;
 
-  const placeInfoValue = document.querySelector('.popup__input_type_card-name').value;
-  const urlInfoValue = document.querySelector('.popup__input_type_url').value;
+  const placeInfoValue = document.querySelector(
+    ".popup__input_type_card-name"
+  ).value;
+  const urlInfoValue = document.querySelector(".popup__input_type_url").value;
 
-  loading(formButton, 'Создание...');
+  loading(formButton, "Создание...");
 
-  api.addCard({ name: placeInfoValue, link: urlInfoValue })
+  api
+    .addCard({ name: placeInfoValue, link: urlInfoValue })
     .then((data) => {
-      const newCardElem = createCard(data, likeCard, deleteCard, openPopupImage, userId, api.cardDeleting);
+      const newCardElem = createCard(
+        data,
+        likeCard,
+        deleteCard,
+        openPopupImage,
+        userId,
+        api.cardDeleting
+      );
       appendCardToDOM(newCardElem);
 
-      console.log('New card added:', data);
+      console.log("New card added:", data);
 
-      const newForm = document.forms['new-place'];
+      const newForm = document.forms["new-place"];
       newForm.reset();
       closePopup(popupNewPlace);
     })
     .catch((error) => {
-      console.error('Error adding new place:', error);
+      console.error("Error adding new place:", error);
     })
     .finally(() => {
       loading(formButton, originalButtonText);
     });
 };
 
-popupNewPlace.addEventListener('submit', addNewPlace);
+popupNewPlace.addEventListener("submit", addNewPlace);
 
 const openPopupImage = (imageData) => {
   const popupImage = document.querySelector(".popup_type_image");
@@ -171,12 +181,13 @@ const closePopup = (popup) => {
 const updateAvatar = (evt) => {
   evt.preventDefault();
   const avatar = avatarInput.value;
-  const formButton = formEditAvatar.querySelector('.popup__button');
+  const formButton = formEditAvatar.querySelector(".popup__button");
   const originalButtonText = formButton.textContent;
 
-  loading(formButton, 'Сохранение...');
+  loading(formButton, "Сохранение...");
 
-  api.editAvatar(avatar)
+  api
+    .editAvatar(avatar)
     .then((userData) => {
       currentAvatar = userData.avatar;
       profileImage.style.backgroundImage = `url('${currentAvatar}')`;
@@ -191,7 +202,7 @@ const updateAvatar = (evt) => {
     });
 };
 
-popupTypeEditAvatar.addEventListener('submit', updateAvatar);
+popupTypeEditAvatar.addEventListener("submit", updateAvatar);
 
 window.addEventListener("load", () => {
   if (currentAvatar) {
@@ -215,7 +226,7 @@ profileImage.addEventListener("click", () => {
   openPopup(popupTypeEditAvatar);
 });
 
-popupTypeEditAvatar.addEventListener('submit', updateAvatar);
+popupTypeEditAvatar.addEventListener("submit", updateAvatar);
 
 profileEditButton.addEventListener("click", () => {
   clearValidation(formEditProfile, validationClearValidation);
@@ -229,20 +240,21 @@ profileAddButton.addEventListener("click", () => {
   openPopup(popupNewPlace);
 });
 
-popupTypeDeleteCard.addEventListener('submit', deleteFormSubmitting);
+popupTypeDeleteCard.addEventListener("submit", deleteFormSubmitting);
 
 const deleteFormSubmitting = (evt) => {
   evt.preventDefault();
-  const formButton = formDeleteCard.querySelector('.popup__button');
+  const formButton = formDeleteCard.querySelector(".popup__button");
   const originalButtonText = formButton.textContent;
 
-  loading(formButton, 'Удаление...');
+  loading(formButton, "Удаление...");
 
-  api.cardDeleting(currentCard)
+  api
+    .cardDeleting(currentCard)
     .then(() => {
       closePopup(popupTypeDeleteCard);
       deleteCard(cardElement);
-      currentCard = '';
+      currentCard = "";
       cardElement = null;
     })
     .catch((err) => {
@@ -253,4 +265,4 @@ const deleteFormSubmitting = (evt) => {
     });
 };
 
-popupTypeDeleteCard.addEventListener('submit', deleteFormSubmitting);
+popupTypeDeleteCard.addEventListener("submit", deleteFormSubmitting);
