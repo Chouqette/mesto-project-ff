@@ -4,12 +4,16 @@
 @import url('./__content/popup__content.css');
 @import url('./__content/_content/popup__content_content_image.css');
 @import url('./__form/popup__form.css');
+@import url('./__field/popup__field.css');
 @import url('./__image/popup__image.css');
 @import url('./__input/popup__input.css');
+@import url('./__input-error/popup__input-error.css');
+@import url('./__input_type_error/popup__input_type_error.css');
 @import url('./__title/popup__title.css');
 @import url('./_is-animated/popup_is-animated.css');
 @import url('./_is-opened/popup_is-opened.css');
-
+@import url('./_button_disabled/popup__button_disabled.css');
+@import url('./_type_image/popup_type_image.css');
 
 .popup {
   font-family: 'Inter', Arial, sans-serif;

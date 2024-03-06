@@ -1,0 +1,5 @@
+.card__like-container {
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+}

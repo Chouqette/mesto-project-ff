@@ -1,7 +1,8 @@
 import "../pages/index.css";
-import initialCards from "./cards.js";
-import { createCard, likeCard, deleteCard, appendCardToDOM } from '../components/card.js';
-import { openModal, closeModal } from '../components/modal.js';
+import { getInitialCards, getUser, editUser, addCard, liking, disliking, updateCardLikesStatus, cardDeleting } from "./api.js";
+import { createCard, likeCard, deleteCard, appendCardToDOM } from "../components/card.js";
+import { openModal, closeModal } from "../components/modal.js";
+import { enableValidation, clearValidation } from "./validation.js";
 
 const cardTemplate = document.getElementById("card-template").content;
 const cardList = document.querySelector(".places__list");
@@ -11,21 +12,45 @@ const profileAddButton = document.querySelector(".profile__add-button");
 const popupEdit = document.querySelector(".popup_type_edit");
 const popupNewPlace = document.querySelector(".popup_type_new-card");
 const closeButton = document.querySelectorAll(".popup__close");
-const popupImageCard = document.querySelector(".popup_type_image");
 const nameInfo = document.querySelector(".popup__input_type_name");
 const descriptionInfo = document.querySelector(".popup__input_type_description");
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
+const profileImage = document.querySelector('.profile__image')
+const formEditProfile = popupEdit.querySelector('.popup__form');
+const formNewPlace = popupNewPlace.querySelector('.popup__form');
 
-const updateProfile = (evt) => {
+const validationEnableValidation = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}; 
+
+const validationClearValidation = {
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+};
+
+const updateProfile = async (evt) => {
   evt.preventDefault();
 
   const nameInfoValue = nameInfo.value;
   const descriptionInfoValue = descriptionInfo.value;
 
-  profileTitle.textContent = nameInfoValue;
-  profileDescription.textContent = descriptionInfoValue;
-  closePopup(popupEdit);
+  try {
+    const userData = await editUser({ name: nameInfoValue, about: descriptionInfoValue });
+    profileTitle.textContent = userData.name;
+    profileDescription.textContent = userData.about;
+    closePopup(popupEdit);
+  } catch (error) {
+    console.error("Error updating profile:", error);
+  }
 };
 
 const addNewPlace = (evt) => {
@@ -34,14 +59,21 @@ const addNewPlace = (evt) => {
   const placeInfoValue = document.querySelector(".popup__input_type_card-name").value;
   const urlInfoValue = document.querySelector(".popup__input_type_url").value;
 
-  const newCard = { name: placeInfoValue, link: urlInfoValue };
-  const cardElem = createCard(newCard, likeCard, deleteCard, openPopupImage);
-  appendCardToDOM(cardElem);
+  addCard({ name: placeInfoValue, link: urlInfoValue })
+    .then((data) => {
+      const newCardElem = createCard(data, likeCard, deleteCard, openPopupImage);
+      appendCardToDOM(newCardElem);
 
-  const addForm = document.forms['new-place'];
-  addForm.reset();
-  
-  closePopup(popupNewPlace);
+      // Вывод информации о новой карточке в консоль
+      console.log("New card added:", data);
+
+      const newForm = document.forms['new-place'];
+      newForm.reset();
+      closePopup(popupNewPlace);
+    })
+    .catch((error) => {
+      console.error("Error adding new place:", error);
+    });
 };
 
 const openPopup = (popup) => {
@@ -59,7 +91,6 @@ const closePopup = (popup) => {
 
 const openPopupImage = (imageData) => {
   const popupImage = document.querySelector(".popup_type_image");
-  const popupImageContent = popupImage.querySelector(".popup__content_content_image");
   const popupImageElement = popupImage.querySelector(".popup__image");
   const popupImageCaption = popupImage.querySelector(".popup__caption");
 
@@ -70,11 +101,34 @@ const openPopupImage = (imageData) => {
   openModal(popupImage);
 };
 
+document.addEventListener('DOMContentLoaded', () => {
+  enableValidation(validationEnableValidation);
+});
 
-profileEditButton.addEventListener("click", () => openPopup(popupEdit));
+Promise.all([getInitialCards(), getUser()])
+  .then(([initialCards, userData]) => {
+    profileTitle.textContent = userData.name;
+    profileDescription.textContent = userData.about;
+    initialCards.forEach((cardData) => {
+      const cardElem = createCard(cardData, likeCard, deleteCard, openPopupImage);
+      appendCardToDOM(cardElem);
+    });
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+
+profileEditButton.addEventListener("click", () => {
+  clearValidation(formEditProfile, validationClearValidation);
+  openPopup(popupEdit);
+});
+
 popupEdit.addEventListener("submit", updateProfile);
 
-profileAddButton.addEventListener("click", () => openPopup(popupNewPlace));
+profileAddButton.addEventListener("click", () => {
+  openPopup(popupNewPlace);
+});
+
 popupNewPlace.addEventListener("submit", addNewPlace);
 
 closeButton.forEach((closeButton) => {
@@ -82,9 +136,4 @@ closeButton.forEach((closeButton) => {
     const openedPopup = document.querySelector(".popup_is-opened");
     closePopup(openedPopup);
   });
-});
-
-initialCards.forEach((cardData) => {
-  const cardElem = createCard(cardData, likeCard, deleteCard, openPopupImage);
-  appendCardToDOM(cardElem);
 });
