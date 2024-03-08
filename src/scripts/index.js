@@ -196,12 +196,16 @@ popupTypeEditAvatar.addEventListener("submit", updateAvatar);
 window.addEventListener("load", () => {
   if (currentAvatar) {
     profileImage.style.backgroundImage = `url('${currentAvatar}')`;
+    profileTitle.textContent = ""; // Очищаем поле перед загрузкой данных
+    profileDescription.textContent = ""; // Очищаем поле перед загрузкой данных
   } else {
     api
       .getUser()
       .then((userData) => {
         currentAvatar = userData.avatar;
         profileImage.style.backgroundImage = `url('${currentAvatar}')`;
+        profileTitle.textContent = userData.name; // Обновляем имя пользователя
+        profileDescription.textContent = userData.about; // Обновляем "занятие" пользователя
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
@@ -209,6 +213,7 @@ window.addEventListener("load", () => {
       });
   }
 });
+
 
 profileImage.addEventListener("click", () => {
   clearValidation(formEditAvatar, validationEnableValidation);
