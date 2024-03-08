@@ -70,11 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         appendCardToDOM(cardElem);
       });
-
-      // Отображение данных пользователя
-      profileTitle.textContent = userData.name;
-      profileDescription.textContent = userData.about;
-      profileImage.style.backgroundImage = `url('${currentAvatar}')`;
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -83,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 closeButtonList.forEach((closeButton) => {
   closeButton.addEventListener("click", () => {
-    const openedPopup = document.querySelector(".popup_is-opened");
+    const openedPopup = closeButton.closest(".popup_is-opened");
     closePopup(openedPopup);
   });
 });
