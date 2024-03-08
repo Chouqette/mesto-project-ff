@@ -217,7 +217,10 @@ window.addEventListener("load", () => {
 
 profileImage.addEventListener("click", () => {
   clearValidation(formEditAvatar, validationEnableValidation);
-  openPopup(popupTypeEditAvatar);
+
+  formEditAvatar.reset();
+
+  openModal(popupTypeEditAvatar);
 });
 
 popupTypeEditAvatar.addEventListener("submit", updateAvatar);
@@ -230,6 +233,5 @@ profileEditButton.addEventListener("click", () => {
 popupEdit.addEventListener("submit", handleLikeClick);
 
 profileAddButton.addEventListener("click", () => {
-  clearValidation(formNewCard, validationEnableValidation);
   openPopup(popupNewPlace);
 });
