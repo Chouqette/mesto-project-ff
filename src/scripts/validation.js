@@ -1,26 +1,21 @@
-const showError = (formElement, inputElement, inputErrorClass, errorClass) => {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  if (errorElement) {
-    inputElement.classList.add(inputErrorClass);
-    errorElement.classList.add(errorClass);
-    errorElement.textContent = inputElement.validationMessage;
-  }
+const showError = (inputElement, errorElement, inputErrorClass, errorClass) => {
+  inputElement.classList.add(inputErrorClass);
+  errorElement.classList.add(errorClass);
+  errorElement.textContent = inputElement.validationMessage;
 };
 
-const hideError = (formElement, inputElement, inputErrorClass, errorClass) => {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  if (errorElement) {
-    inputElement.classList.remove(inputErrorClass);
-    errorElement.classList.remove(errorClass);
-    errorElement.textContent = "";
-  }
+const hideError = (inputElement, errorElement, inputErrorClass, errorClass) => {
+  inputElement.classList.remove(inputErrorClass);
+  errorElement.classList.remove(errorClass);
+  errorElement.textContent = "";
 };
 
 const checkValidity = (
   formElement,
   inputElement,
   inputErrorClass,
-  errorClass
+  errorClass,
+  errorElement
 ) => {
   const regex = /[^а-яёa-z\-\s]+/i;
   const inputStr = inputElement.value;
@@ -30,11 +25,12 @@ const checkValidity = (
       : ""
   );
 
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   if (errorElement) {
-    inputElement.validity.valid
-      ? hideError(formElement, inputElement, inputErrorClass, errorClass)
-      : showError(formElement, inputElement, inputErrorClass, errorClass);
+    if (inputElement.validity.valid) {
+      hideError(inputElement, errorElement, inputErrorClass, errorClass);
+    } else {
+      showError(inputElement, errorElement, inputErrorClass, errorClass);
+    }
   }
 };
 
@@ -49,25 +45,22 @@ const setListeners = (
   const inputList = Array.from(formElement.querySelectorAll(inputSelector));
   const buttonElement = formElement.querySelector(submitButtonSelector);
 
-  const updateValidation = () => {
-    inputList.forEach((input) =>
-      checkValidity(formElement, input, inputErrorClass, errorClass)
-    );
+  const updateValidation = (inputElement) => {
+    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+    checkValidity(formElement, inputElement, inputErrorClass, errorClass, errorElement);
     toggleButtonState(inputList, buttonElement, inactiveButtonClass);
   };
 
   inputList.forEach((input) => {
-    input.addEventListener("input", updateValidation);
+    input.addEventListener("input", () => updateValidation(input));
   });
 
   formElement.addEventListener("reset", () => {
     inputList.forEach((input) =>
-      hideError(formElement, input, inputErrorClass, errorClass)
+      hideError(input, formElement.querySelector(`.${input.id}-error`), inputErrorClass, errorClass)
     );
     toggleButtonState(inputList, buttonElement, inactiveButtonClass);
   });
-
-  updateValidation();
 };
 
 const hasInvalidInput = (inputList) =>
@@ -91,9 +84,9 @@ const enableValidation = ({
   inputErrorClass,
   errorClass,
 }) => {
-  Array.from(document.querySelectorAll(formSelector)).forEach((form) => {
+  Array.from(document.querySelectorAll(formSelector)).forEach((formElement) => {
     setListeners(
-      form,
+      formElement,
       inputSelector,
       submitButtonSelector,
       inactiveButtonClass,
@@ -118,7 +111,12 @@ const clearValidation = (
 
   inputList.forEach((input) => {
     input.setCustomValidity("");
-    hideError(formElement, input, inputErrorClass, errorClass);
+    hideError(
+      input,
+      formElement.querySelector(`.${input.id}-error`),
+      inputErrorClass,
+      errorClass
+    );
   });
 
   toggleButtonState(inputList, buttonElement, inactiveButtonClass);
