@@ -60,18 +60,22 @@ const changeVisibleDeleteButton = (deleteButtonElem) => {
 };
 
 const likeCard = (event, likeButtonElem, cardData, likeCounterElem) => {
-  const isLiked = likeButtonElem.classList.toggle(
-    "card__like-button_is-active"
-  );
+  const isLiked = likeButtonElem.classList.contains("card__like-button_is-active");
 
-  const likeAction = isLiked ? api.setCardLike : api.removeCardLike;
+  const likeAction = isLiked ? api.removeCardLike : api.setCardLike;
 
   likeAction(cardData._id)
     .then((updatedCardData) => {
+      // Обновляем состояние кнопки и счетчика лайков после успешного запроса
+      const newIsLiked = !isLiked;
+      likeButtonElem.classList.toggle("card__like-button_is-active", newIsLiked);
       likeCounterElem.textContent = updatedCardData.likes.length;
     })
     .catch((error) => {
       console.error("Error updating likes:", error);
+
+      // Если произошла ошибка, возвращаем состояние кнопки на прежнее
+      likeButtonElem.classList.toggle("card__like-button_is-active", isLiked);
     });
 };
 
