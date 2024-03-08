@@ -7,7 +7,6 @@ import {
   appendCardToDOM,
 } from "../components/card.js";
 import { openModal, closeModal } from "../components/modal.js";
-import { loading } from "./load.js";
 import { enableValidation, clearValidation } from "./validation.js";
 
 let userId = "";
@@ -91,6 +90,10 @@ closeButton.forEach((closeButton) => {
   });
 });
 
+function setButtonText(button, text) {
+  button.textContent = text;
+}
+
 const updateProfile = async (evt) => {
   evt.preventDefault();
 
@@ -121,7 +124,7 @@ const addNewPlace = (evt) => {
   ).value;
   const urlInfoValue = document.querySelector(".popup__input_type_url").value;
 
-  loading(formButton, "Создание...");
+  setButtonText(formButton, "Создание...");
 
   api
     .addCard({ name: placeInfoValue, link: urlInfoValue })
@@ -146,7 +149,7 @@ const addNewPlace = (evt) => {
       console.error("Error adding new place:", error);
     })
     .finally(() => {
-      loading(formButton, originalButtonText);
+      setButtonText(formButton, originalButtonText);
     });
 };
 
@@ -183,7 +186,7 @@ const updateAvatar = (evt) => {
   const formButton = formEditAvatar.querySelector(".popup__button");
   const originalButtonText = formButton.textContent;
 
-  loading(formButton, "Сохранение...");
+  setButtonText(formButton, "Сохранение...");
 
   api
     .editAvatar(avatar)
@@ -197,7 +200,7 @@ const updateAvatar = (evt) => {
       console.error(`Ошибка: ${err}`);
     })
     .finally(() => {
-      loading(formButton, originalButtonText);
+      setButtonText(formButton, originalButtonText);
     });
 };
 
