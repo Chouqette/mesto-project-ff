@@ -1,4 +1,5 @@
 import * as api from "../scripts/api.js";
+const cardTemplate = document.querySelector("#card-template").content;
 
 const createCard = (
   cardData,
@@ -8,9 +9,7 @@ const createCard = (
   userId,
   cardDeleting
 ) => {
-  const cardTemplate = document.getElementById("card-template").content;
   const cardElem = cardTemplate.cloneNode(true);
-
   const imageElem = cardElem.querySelector(".card__image");
   const titleElem = cardElem.querySelector(".card__title");
   const likeButtonElem = cardElem.querySelector(".card__like-button");
