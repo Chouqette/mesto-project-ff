@@ -25,7 +25,7 @@ const popupImageCaption = popupImage.querySelector(".popup__caption");
 const formNewCard = popupTypeNewCard.querySelector(".popup__form");
 const formEditAvatar = popupTypeEditAvatar.querySelector(".popup__form");
 const avatarInput = formEditAvatar.querySelector(".popup__input_type_avatar");
-const formButton = formNewCard.querySelector(".popup__button");
+const formButton = formEditAvatar.querySelector(".popup__button");
 const formEditProfile = popupEdit.querySelector(".popup__form");
 const closeButtonList = document.querySelectorAll(".popup__close");
 const nameInfo = document.querySelector(".popup__input_type_name");
@@ -176,7 +176,6 @@ const closePopup = (popup) => {
 const updateAvatar = (evt) => {
   evt.preventDefault();
   const avatar = avatarInput.value;
-  const formButton = formEditAvatar.querySelector(".popup__button");
   const originalButtonText = formButton.textContent;
 
   setButtonText(formButton, "Сохранение...");
