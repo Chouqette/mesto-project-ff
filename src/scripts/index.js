@@ -1,7 +1,7 @@
 import "../pages/index.css";
 import * as api from "./api.js";
-import { createCard, likeCard, deleteCard } from "../components/card.js";
-import { openModal, closeModal } from "../components/modal.js";
+import { createCard, likeCard, deleteCard } from "./card.js";
+import { openModal, closeModal } from "./modal.js";
 import { enableValidation, clearValidation } from "./validation.js";
 
 // Объявление переменных
@@ -42,7 +42,7 @@ const validationEnableValidation = {
 };
 
 // Функции
-const appendCardToDOM = (cardElem) => {
+const prependCardToDOM = (cardElem) => {
   cardsContainer.prepend(cardElem);
 };
 
@@ -100,7 +100,7 @@ const addNewPlace = (evt) => {
         userId,
         api.cardDeleting
       );
-      appendCardToDOM(newCardElem);
+      prependCardToDOM(newCardElem);
 
       const newForm = document.forms["new-place"];
       newForm.reset();
@@ -153,7 +153,12 @@ document.addEventListener("DOMContentLoaded", () => {
       userId = userData._id;
       currentAvatar = userData.avatar;
 
-      // Используем reverse, чтобы изменить порядок карточек
+      // Установка данных профиля и аватара
+      profileImage.style.backgroundImage = `url('${currentAvatar}')`;
+      profileTitle.textContent = userData.name;
+      profileDescription.textContent = userData.about;
+
+      // Обработка карточек
       initialCards.reverse().forEach((cardData) => {
         const cardElem = createCard(
           cardData,
@@ -163,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
           userId,
           api.cardDeleting
         );
-        appendCardToDOM(cardElem);
+        prependCardToDOM(cardElem);
       });
     })
     .catch((error) => {
@@ -180,27 +185,6 @@ document.addEventListener("DOMContentLoaded", () => {
   popupNewPlace.addEventListener("submit", addNewPlace);
 
   popupTypeEditAvatar.addEventListener("submit", updateAvatar);
-
-  window.addEventListener("load", () => {
-    if (currentAvatar) {
-      profileImage.style.backgroundImage = `url('${currentAvatar}')`;
-      profileTitle.textContent = "";
-      profileDescription.textContent = "";
-    } else {
-      api
-        .getUser()
-        .then((userData) => {
-          currentAvatar = userData.avatar;
-          profileImage.style.backgroundImage = `url('${currentAvatar}')`;
-          profileTitle.textContent = userData.name;
-          profileDescription.textContent = userData.about;
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          profileImage.style.backgroundImage = `url('${currentAvatar}')`;
-        });
-    }
-  });
 
   profileImage.addEventListener("click", () => {
     clearValidation(formEditAvatar, validationEnableValidation);
