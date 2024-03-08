@@ -4,28 +4,30 @@ import {
   createCard,
   likeCard,
   deleteCard,
-  appendCardToDOM,
 } from "../components/card.js";
 import { openModal, closeModal } from "../components/modal.js";
 import { enableValidation, clearValidation } from "./validation.js";
 
 let userId = "";
 let currentAvatar = "";
-let currentCard = "";
-let cardElement = null;
 
 // Элементы DOM
+const cardsContainer = document.querySelector(".places__list");
 const profileEditButton = document.querySelector(".profile__edit-button");
 const profileAddButton = document.querySelector(".profile__add-button");
 const popupEdit = document.querySelector(".popup_type_edit");
 const popupNewPlace = document.querySelector(".popup_type_new-card");
 const popupTypeEditAvatar = document.querySelector(".popup_type_edit_avatar");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
+const popupImage = document.querySelector(".popup_type_image");
+const popupImageElement = popupImage.querySelector(".popup__image");
+const popupImageCaption = popupImage.querySelector(".popup__caption");
 const formNewCard = popupTypeNewCard.querySelector(".popup__form");
 const formEditAvatar = popupTypeEditAvatar.querySelector(".popup__form");
 const avatarInput = formEditAvatar.querySelector(".popup__input_type_avatar");
+const formButton = formNewCard.querySelector(".popup__button");
 const formEditProfile = popupEdit.querySelector(".popup__form");
-const closeButton = document.querySelectorAll(".popup__close");
+const closeButtonList = document.querySelectorAll(".popup__close");
 const nameInfo = document.querySelector(".popup__input_type_name");
 const descriptionInfo = document.querySelector(
   ".popup__input_type_description"
@@ -44,12 +46,8 @@ const validationEnableValidation = {
   errorClass: "popup__error_visible",
 };
 
-const validationClearValidation = {
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__error_visible",
+const appendCardToDOM = (cardElem) => {
+  cardsContainer.prepend(cardElem);
 };
 
 // Обработчики событий
@@ -83,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-closeButton.forEach((closeButton) => {
+closeButtonList.forEach((closeButton) => {
   closeButton.addEventListener("click", () => {
     const openedPopup = document.querySelector(".popup_is-opened");
     closePopup(openedPopup);
@@ -94,7 +92,7 @@ function setButtonText(button, text) {
   button.textContent = text;
 }
 
-const updateProfile = async (evt) => {
+const handleLikeClick = async (evt) => {
   evt.preventDefault();
 
   const nameInfoValue = nameInfo.value;
@@ -116,7 +114,6 @@ const updateProfile = async (evt) => {
 
 const addNewPlace = (evt) => {
   evt.preventDefault();
-  const formButton = formNewCard.querySelector(".popup__button");
   const originalButtonText = formButton.textContent;
 
   const placeInfoValue = document.querySelector(
@@ -156,10 +153,6 @@ const addNewPlace = (evt) => {
 popupNewPlace.addEventListener("submit", addNewPlace);
 
 const openPopupImage = (imageData) => {
-  const popupImage = document.querySelector(".popup_type_image");
-  const popupImageElement = popupImage.querySelector(".popup__image");
-  const popupImageCaption = popupImage.querySelector(".popup__caption");
-
   popupImageElement.src = imageData.link;
   popupImageElement.alt = imageData.name;
   popupImageCaption.textContent = imageData.name;
@@ -231,13 +224,13 @@ profileImage.addEventListener("click", () => {
 popupTypeEditAvatar.addEventListener("submit", updateAvatar);
 
 profileEditButton.addEventListener("click", () => {
-  clearValidation(formEditProfile, validationClearValidation);
+  clearValidation(formEditProfile, validationEnableValidation);
   openPopup(popupEdit);
 });
 
-popupEdit.addEventListener("submit", updateProfile);
+popupEdit.addEventListener("submit", handleLikeClick);
 
 profileAddButton.addEventListener("click", () => {
-  clearValidation(formNewCard, validationClearValidation);
+  clearValidation(formNewCard, validationEnableValidation);
   openPopup(popupNewPlace);
 });

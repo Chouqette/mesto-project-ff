@@ -47,11 +47,7 @@ const createCard = (
   const isVisible = checkVisibleDeleteButton(cardData, userId);
   if (isVisible) {
     changeVisibleDeleteButton(deleteButtonElem);
-    deleteButtonElem.addEventListener("click", () =>
-      console.log("Клик прошёл")
-    );
   }
-
   return cardElem;
 };
 
@@ -60,7 +56,7 @@ const checkVisibleDeleteButton = (cardData, userId) => {
 };
 
 const changeVisibleDeleteButton = (deleteButtonElem) => {
-  deleteButtonElem.setAttribute("style", "display: block;");
+  deleteButtonElem.style.display = "block"; 
 };
 
 const likeCard = (event, likeButtonElem, cardData, likeCounterElem) => {
@@ -68,7 +64,7 @@ const likeCard = (event, likeButtonElem, cardData, likeCounterElem) => {
     "card__like-button_is-active"
   );
 
-  const likeAction = isLiked ? api.liking : api.disliking;
+  const likeAction = isLiked ? api.setCardLike : api.removeCardLike;
 
   likeAction(cardData._id)
     .then((updatedCardData) => {
@@ -93,9 +89,4 @@ const deleteCard = (event, cardData, cardDeleting) => {
   }
 };
 
-const appendCardToDOM = (cardElem) => {
-  const cardList = document.querySelector(".places__list");
-  cardList.prepend(cardElem);
-};
-
-export { createCard, likeCard, deleteCard, appendCardToDOM };
+export { createCard, likeCard, deleteCard };

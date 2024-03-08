@@ -15,9 +15,6 @@ const getUser = () => {
     headers: BASE.headers,
   })
     .then(checkResponse)
-    .then((userData) => {
-      return userData;
-    })
     .catch((error) => {
       console.error(error);
       throw error;
@@ -29,9 +26,6 @@ const getInitialCards = () => {
     headers: BASE.headers,
   })
     .then(checkResponse)
-    .then((cardData) => {
-      return cardData;
-    })
     .catch((error) => {
       console.error("Error:", error);
       throw error;
@@ -70,7 +64,7 @@ const addCard = ({ name, link }) => {
     });
 };
 
-const cardDeleting = (cardId) => {
+const cardDeleting  = (cardId) => {
   return fetch(`${BASE.URL}/cards/${cardId}`, {
     method: "DELETE",
     headers: BASE.headers,
@@ -82,26 +76,26 @@ const cardDeleting = (cardId) => {
     });
 };
 
-const liking = (cardId) => {
+const setCardLike = (cardId) => {
   return fetch(`${BASE.URL}/cards/likes/${cardId}`, {
     method: "PUT",
     headers: BASE.headers,
   })
     .then(checkResponse)
     .catch((error) => {
-      console.error(`Error liking card ${cardId}:`, error);
+      console.error(`Error setCardLike card ${cardId}:`, error);
       throw error;
     });
 };
 
-const disliking = (cardId) => {
+const removeCardLike = (cardId) => {
   return fetch(`${BASE.URL}/cards/likes/${cardId}`, {
     method: "DELETE",
     headers: BASE.headers,
   })
     .then(checkResponse)
     .catch((error) => {
-      console.error(`Error disliking card ${cardId}:`, error);
+      console.error(`Error removeCardLike card ${cardId}:`, error);
       throw error;
     });
 };
@@ -126,8 +120,8 @@ export {
   getUser,
   editUser,
   addCard,
-  liking,
-  disliking,
-  cardDeleting,
+  setCardLike,
+  removeCardLike,
+  cardDeleting ,
   editAvatar,
 };
