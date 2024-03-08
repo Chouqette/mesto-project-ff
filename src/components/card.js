@@ -55,11 +55,13 @@ const checkVisibleDeleteButton = (cardData, userId) => {
 };
 
 const changeVisibleDeleteButton = (deleteButtonElem) => {
-  deleteButtonElem.style.display = "block"; 
+  deleteButtonElem.style.display = "block";
 };
 
 const likeCard = (event, likeButtonElem, cardData, likeCounterElem) => {
-  const isLiked = likeButtonElem.classList.contains("card__like-button_is-active");
+  const isLiked = likeButtonElem.classList.contains(
+    "card__like-button_is-active"
+  );
 
   const likeAction = isLiked ? api.removeCardLike : api.setCardLike;
 
@@ -67,7 +69,10 @@ const likeCard = (event, likeButtonElem, cardData, likeCounterElem) => {
     .then((updatedCardData) => {
       // Обновляем состояние кнопки и счетчика лайков после успешного запроса
       const newIsLiked = !isLiked;
-      likeButtonElem.classList.toggle("card__like-button_is-active", newIsLiked);
+      likeButtonElem.classList.toggle(
+        "card__like-button_is-active",
+        newIsLiked
+      );
       likeCounterElem.textContent = updatedCardData.likes.length;
     })
     .catch((error) => {

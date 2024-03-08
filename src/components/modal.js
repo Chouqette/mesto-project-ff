@@ -2,8 +2,8 @@ const popupList = document.querySelectorAll(".popup");
 
 const closePopupByOverlay = (modal, event) => {
   const preventClosingElements = ["input"];
-  
-  if (!preventClosingElements.some(tag => event.target.closest(tag))) {
+
+  if (!preventClosingElements.some((tag) => event.target.closest(tag))) {
     closeModal(modal);
   }
 };
@@ -12,7 +12,9 @@ const openModal = (modal) => {
   if (modal) {
     modal.classList.add("popup_is-opened", "popup_is-animated");
     document.addEventListener("keydown", closeEsc);
-    modal.addEventListener("click", (event) => closePopupByOverlay(modal, event));
+    modal.addEventListener("click", (event) =>
+      closePopupByOverlay(modal, event)
+    );
   }
 };
 

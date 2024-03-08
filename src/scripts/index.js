@@ -1,10 +1,6 @@
 import "../pages/index.css";
 import * as api from "./api.js";
-import {
-  createCard,
-  likeCard,
-  deleteCard,
-} from "../components/card.js";
+import { createCard, likeCard, deleteCard } from "../components/card.js";
 import { openModal, closeModal } from "../components/modal.js";
 import { enableValidation, clearValidation } from "./validation.js";
 
@@ -29,7 +25,9 @@ const formButton = formEditAvatar.querySelector(".popup__button");
 const formEditProfile = popupEdit.querySelector(".popup__form");
 const closeButtonList = document.querySelectorAll(".popup__close");
 const nameInfo = document.querySelector(".popup__input_type_name");
-const descriptionInfo = document.querySelector(".popup__input_type_description");
+const descriptionInfo = document.querySelector(
+  ".popup__input_type_description"
+);
 const profileImage = document.querySelector(".profile__image");
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
@@ -69,12 +67,10 @@ const updateProfile = (evt) => {
     .then((userData) => {
       profileTitle.textContent = userData.name;
       profileDescription.textContent = userData.about;
-      setButtonText(formButton, "Сохранить");
       closeModal(popupEdit);
     })
     .catch((error) => {
       console.error("Error updating profile:", error);
-      setButtonText(formButton, "Сохранить");
     })
     .finally(() => {
       setButtonText(formButton, "Сохранить");
@@ -85,6 +81,7 @@ const addNewPlace = (evt) => {
   evt.preventDefault();
   const originalButtonText = formButton.textContent;
 
+  // Объявление переменных
   const placeInfoValue = document.querySelector(
     ".popup__input_type_card-name"
   ).value;
@@ -143,7 +140,7 @@ const updateAvatar = (evt) => {
       console.error(`Ошибка: ${err}`);
     })
     .finally(() => {
-      setButtonText(formButton, 'Сохранить');
+      setButtonText(formButton, "Сохранить");
     });
 };
 
@@ -156,7 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
       userId = userData._id;
       currentAvatar = userData.avatar;
 
-      initialCards.forEach((cardData) => {
+      // Используем reverse, чтобы изменить порядок карточек
+      initialCards.reverse().forEach((cardData) => {
         const cardElem = createCard(
           cardData,
           likeCard,
@@ -171,54 +169,55 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch((error) => {
       console.error("Error:", error);
     });
-});
 
-closeButtonList.forEach((closeButton) => {
-  closeButton.addEventListener("click", () => {
-    const openedPopup = closeButton.closest(".popup_is-opened");
-    closeModal(openedPopup);
+  closeButtonList.forEach((closeButton) => {
+    closeButton.addEventListener("click", () => {
+      const openedPopup = closeButton.closest(".popup_is-opened");
+      closeModal(openedPopup);
+    });
   });
-});
 
-popupNewPlace.addEventListener("submit", addNewPlace);
+  popupNewPlace.addEventListener("submit", addNewPlace);
 
-popupTypeEditAvatar.addEventListener("submit", updateAvatar);
+  popupTypeEditAvatar.addEventListener("submit", updateAvatar);
 
-window.addEventListener("load", () => {
-  if (currentAvatar) {
-    profileImage.style.backgroundImage = `url('${currentAvatar}')`;
-    profileTitle.textContent = "";
-    profileDescription.textContent = "";
-  } else {
-    api.getUser()
-      .then((userData) => {
-        currentAvatar = userData.avatar;
-        profileImage.style.backgroundImage = `url('${currentAvatar}')`;
-        profileTitle.textContent = userData.name;
-        profileDescription.textContent = userData.about;
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-        profileImage.style.backgroundImage = `url('${currentAvatar}')`;
-      });
-  }
-});
+  window.addEventListener("load", () => {
+    if (currentAvatar) {
+      profileImage.style.backgroundImage = `url('${currentAvatar}')`;
+      profileTitle.textContent = "";
+      profileDescription.textContent = "";
+    } else {
+      api
+        .getUser()
+        .then((userData) => {
+          currentAvatar = userData.avatar;
+          profileImage.style.backgroundImage = `url('${currentAvatar}')`;
+          profileTitle.textContent = userData.name;
+          profileDescription.textContent = userData.about;
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+          profileImage.style.backgroundImage = `url('${currentAvatar}')`;
+        });
+    }
+  });
 
-profileImage.addEventListener("click", () => {
-  clearValidation(formEditAvatar, validationEnableValidation);
-  formEditAvatar.reset();
-  openModal(popupTypeEditAvatar);
-});
+  profileImage.addEventListener("click", () => {
+    clearValidation(formEditAvatar, validationEnableValidation);
+    formEditAvatar.reset();
+    openModal(popupTypeEditAvatar);
+  });
 
-profileEditButton.addEventListener("click", () => {
-  clearValidation(formEditProfile, validationEnableValidation);
-  openModal(popupEdit);
-  nameInfo.value = profileTitle.textContent;
-  descriptionInfo.value = profileDescription.textContent;
-});
+  profileEditButton.addEventListener("click", () => {
+    clearValidation(formEditProfile, validationEnableValidation);
+    openModal(popupEdit);
+    nameInfo.value = profileTitle.textContent;
+    descriptionInfo.value = profileDescription.textContent;
+  });
 
-popupEdit.addEventListener("submit", updateProfile);
+  popupEdit.addEventListener("submit", updateProfile);
 
-profileAddButton.addEventListener("click", () => {
-  openModal(popupNewPlace);
+  profileAddButton.addEventListener("click", () => {
+    openModal(popupNewPlace);
+  });
 });
