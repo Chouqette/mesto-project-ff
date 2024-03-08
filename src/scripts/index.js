@@ -8,10 +8,10 @@ import {
 import { openModal, closeModal } from "../components/modal.js";
 import { enableValidation, clearValidation } from "./validation.js";
 
+// Объявление переменных
 let userId = "";
 let currentAvatar = "";
 
-// Элементы DOM
 const cardsContainer = document.querySelector(".places__list");
 const profileEditButton = document.querySelector(".profile__edit-button");
 const profileAddButton = document.querySelector(".profile__add-button");
@@ -29,14 +29,11 @@ const formButton = formEditAvatar.querySelector(".popup__button");
 const formEditProfile = popupEdit.querySelector(".popup__form");
 const closeButtonList = document.querySelectorAll(".popup__close");
 const nameInfo = document.querySelector(".popup__input_type_name");
-const descriptionInfo = document.querySelector(
-  ".popup__input_type_description"
-);
+const descriptionInfo = document.querySelector(".popup__input_type_description");
 const profileImage = document.querySelector(".profile__image");
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 
-// Объекты для валидации
 const validationEnableValidation = {
   formSelector: ".popup__form",
   inputSelector: ".popup__input",
@@ -46,11 +43,111 @@ const validationEnableValidation = {
   errorClass: "popup__error_visible",
 };
 
+// Функции
 const appendCardToDOM = (cardElem) => {
   cardsContainer.prepend(cardElem);
 };
 
-// Обработчики событий
+const setButtonText = (button, text) => {
+  button.textContent = text;
+};
+
+const updateProfile = (evt) => {
+  evt.preventDefault();
+
+  const formButton = formEditProfile.querySelector(".popup__button");
+  setButtonText(formButton, "Сохранение...");
+
+  const nameInfoValue = nameInfo.value;
+  const descriptionInfoValue = descriptionInfo.value;
+
+  api
+    .editUser({
+      name: nameInfoValue,
+      about: descriptionInfoValue,
+    })
+    .then((userData) => {
+      profileTitle.textContent = userData.name;
+      profileDescription.textContent = userData.about;
+      setButtonText(formButton, "Сохранить");
+      closeModal(popupEdit);
+    })
+    .catch((error) => {
+      console.error("Error updating profile:", error);
+      setButtonText(formButton, "Сохранить");
+    })
+    .finally(() => {
+      setButtonText(formButton, "Сохранить");
+    });
+};
+
+const addNewPlace = (evt) => {
+  evt.preventDefault();
+  const originalButtonText = formButton.textContent;
+
+  const placeInfoValue = document.querySelector(
+    ".popup__input_type_card-name"
+  ).value;
+  const urlInfoValue = document.querySelector(".popup__input_type_url").value;
+
+  setButtonText(formButton, "Создание...");
+
+  api
+    .addCard({ name: placeInfoValue, link: urlInfoValue })
+    .then((data) => {
+      const newCardElem = createCard(
+        data,
+        likeCard,
+        deleteCard,
+        openPopupImage,
+        userId,
+        api.cardDeleting
+      );
+      appendCardToDOM(newCardElem);
+
+      const newForm = document.forms["new-place"];
+      newForm.reset();
+      closeModal(popupNewPlace);
+    })
+    .catch((error) => {
+      console.error("Error adding new place:", error);
+    })
+    .finally(() => {
+      setButtonText(formButton, originalButtonText);
+    });
+};
+
+const openPopupImage = (imageData) => {
+  popupImageElement.src = imageData.link;
+  popupImageElement.alt = imageData.name;
+  popupImageCaption.textContent = imageData.name;
+
+  openModal(popupImage);
+};
+
+const updateAvatar = (evt) => {
+  evt.preventDefault();
+  const avatar = avatarInput.value;
+
+  setButtonText(formButton, "Сохранение...");
+
+  api
+    .editAvatar(avatar)
+    .then((userData) => {
+      currentAvatar = userData.avatar;
+      profileImage.style.backgroundImage = `url('${currentAvatar}')`;
+      formEditAvatar.reset();
+      closeModal(popupTypeEditAvatar);
+    })
+    .catch((err) => {
+      console.error(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      setButtonText(formButton, 'Сохранить');
+    });
+};
+
+// Добавление обработчиков событий
 document.addEventListener("DOMContentLoaded", () => {
   enableValidation(validationEnableValidation);
 
@@ -79,124 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
 closeButtonList.forEach((closeButton) => {
   closeButton.addEventListener("click", () => {
     const openedPopup = closeButton.closest(".popup_is-opened");
-    closePopup(openedPopup);
+    closeModal(openedPopup);
   });
 });
 
-function setButtonText(button, text) {
-  button.textContent = text;
-}
-
-const updateProfile = (evt) => {
-  evt.preventDefault();
-
-  const formButton = formEditProfile.querySelector(".popup__button");
-  setButtonText(formButton, "Сохранение...");
-
-  const nameInfoValue = nameInfo.value;
-  const descriptionInfoValue = descriptionInfo.value;
-
-  api
-    .editUser({
-      name: nameInfoValue,
-      about: descriptionInfoValue,
-    })
-    .then((userData) => {
-      profileTitle.textContent = userData.name;
-      profileDescription.textContent = userData.about;
-      setButtonText(formButton, "Сохранить");
-      closePopup(popupEdit);
-    })
-    .catch((error) => {
-      console.error("Error updating profile:", error);
-      setButtonText(formButton, "Сохранить");
-    })
-    .finally(() => {
-      setButtonText(formButton, "Сохранить");
-    });
-};
-
-
-const addNewPlace = (evt) => {
-  evt.preventDefault();
-  const originalButtonText = formButton.textContent;
-
-  const placeInfoValue = document.querySelector(
-    ".popup__input_type_card-name"
-  ).value;
-  const urlInfoValue = document.querySelector(".popup__input_type_url").value;
-
-  setButtonText(formButton, "Создание...");
-
-  api
-    .addCard({ name: placeInfoValue, link: urlInfoValue })
-    .then((data) => {
-      const newCardElem = createCard(
-        data,
-        likeCard,
-        deleteCard,
-        openPopupImage,
-        userId,
-        api.cardDeleting
-      );
-      appendCardToDOM(newCardElem);
-
-      const newForm = document.forms["new-place"];
-      newForm.reset();
-      closePopup(popupNewPlace);
-    })
-    .catch((error) => {
-      console.error("Error adding new place:", error);
-    })
-    .finally(() => {
-      setButtonText(formButton, originalButtonText);
-    });
-};
-
 popupNewPlace.addEventListener("submit", addNewPlace);
-
-const openPopupImage = (imageData) => {
-  popupImageElement.src = imageData.link;
-  popupImageElement.alt = imageData.name;
-  popupImageCaption.textContent = imageData.name;
-
-  openModal(popupImage);
-};
-
-const openPopup = (popup) => {
-  openModal(popup);
-
-  if (popup === popupEdit) {
-    nameInfo.value = profileTitle.textContent;
-    descriptionInfo.value = profileDescription.textContent;
-  }
-};
-
-const closePopup = (popup) => {
-  closeModal(popup);
-};
-
-const updateAvatar = (evt) => {
-  evt.preventDefault();
-  const avatar = avatarInput.value;
-
-  setButtonText(formButton, "Сохранение...");
-
-  api
-    .editAvatar(avatar)
-    .then((userData) => {
-      currentAvatar = userData.avatar;
-      profileImage.style.backgroundImage = `url('${currentAvatar}')`;
-      formEditAvatar.reset();
-      closePopup(popupTypeEditAvatar);
-    })
-    .catch((err) => {
-      console.error(`Ошибка: ${err}`);
-    })
-    .finally(() => {
-      setButtonText(formButton, 'Сохранить');
-    });
-};
 
 popupTypeEditAvatar.addEventListener("submit", updateAvatar);
 
@@ -220,22 +204,21 @@ window.addEventListener("load", () => {
   }
 });
 
-
 profileImage.addEventListener("click", () => {
   clearValidation(formEditAvatar, validationEnableValidation);
   formEditAvatar.reset();
   openModal(popupTypeEditAvatar);
 });
 
-popupTypeEditAvatar.addEventListener("submit", updateAvatar);
-
 profileEditButton.addEventListener("click", () => {
   clearValidation(formEditProfile, validationEnableValidation);
-  openPopup(popupEdit);
+  openModal(popupEdit);
+  nameInfo.value = profileTitle.textContent;
+  descriptionInfo.value = profileDescription.textContent;
 });
 
 popupEdit.addEventListener("submit", updateProfile);
 
 profileAddButton.addEventListener("click", () => {
-  openPopup(popupNewPlace);
+  openModal(popupNewPlace);
 });
