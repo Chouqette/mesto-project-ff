@@ -87,25 +87,35 @@ function setButtonText(button, text) {
   button.textContent = text;
 }
 
-const handleLikeClick = async (evt) => {
+const updateProfile = (evt) => {
   evt.preventDefault();
+
+  const formButton = formEditProfile.querySelector(".popup__button");
+  setButtonText(formButton, "Сохранение...");
 
   const nameInfoValue = nameInfo.value;
   const descriptionInfoValue = descriptionInfo.value;
 
-  try {
-    const userData = await api.editUser({
+  api
+    .editUser({
       name: nameInfoValue,
       about: descriptionInfoValue,
+    })
+    .then((userData) => {
+      profileTitle.textContent = userData.name;
+      profileDescription.textContent = userData.about;
+      setButtonText(formButton, "Сохранить");
+      closePopup(popupEdit);
+    })
+    .catch((error) => {
+      console.error("Error updating profile:", error);
+      setButtonText(formButton, "Сохранить");
+    })
+    .finally(() => {
+      setButtonText(formButton, "Сохранить");
     });
-
-    profileTitle.textContent = userData.name;
-    profileDescription.textContent = userData.about;
-    closePopup(popupEdit);
-  } catch (error) {
-    console.error("Error updating profile:", error);
-  }
 };
+
 
 const addNewPlace = (evt) => {
   evt.preventDefault();
@@ -130,8 +140,6 @@ const addNewPlace = (evt) => {
         api.cardDeleting
       );
       appendCardToDOM(newCardElem);
-
-      console.log("New card added:", data);
 
       const newForm = document.forms["new-place"];
       newForm.reset();
@@ -171,7 +179,6 @@ const closePopup = (popup) => {
 const updateAvatar = (evt) => {
   evt.preventDefault();
   const avatar = avatarInput.value;
-  const originalButtonText = formButton.textContent;
 
   setButtonText(formButton, "Сохранение...");
 
@@ -187,7 +194,7 @@ const updateAvatar = (evt) => {
       console.error(`Ошибка: ${err}`);
     })
     .finally(() => {
-      setButtonText(formButton, originalButtonText);
+      setButtonText(formButton, 'Сохранить');
     });
 };
 
@@ -196,15 +203,15 @@ popupTypeEditAvatar.addEventListener("submit", updateAvatar);
 window.addEventListener("load", () => {
   if (currentAvatar) {
     profileImage.style.backgroundImage = `url('${currentAvatar}')`;
-    profileTitle.textContent = ""; // Очищаем поле перед загрузкой данных
-    profileDescription.textContent = ""; // Очищаем поле перед загрузкой данных
+    profileTitle.textContent = "";
+    profileDescription.textContent = "";
   } else {
     api.getUser()
       .then((userData) => {
         currentAvatar = userData.avatar;
         profileImage.style.backgroundImage = `url('${currentAvatar}')`;
-        profileTitle.textContent = userData.name; // Обновляем имя пользователя
-        profileDescription.textContent = userData.about; // Обновляем "занятие" пользователя
+        profileTitle.textContent = userData.name;
+        profileDescription.textContent = userData.about;
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
@@ -227,7 +234,7 @@ profileEditButton.addEventListener("click", () => {
   openPopup(popupEdit);
 });
 
-popupEdit.addEventListener("submit", handleLikeClick);
+popupEdit.addEventListener("submit", updateProfile);
 
 profileAddButton.addEventListener("click", () => {
   openPopup(popupNewPlace);
