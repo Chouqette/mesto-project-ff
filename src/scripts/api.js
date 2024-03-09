@@ -64,7 +64,7 @@ const addCard = ({ name, link }) => {
     });
 };
 
-const cardDeleting = (cardId) => {
+const removeCard = (cardId) => {
   return fetch(`${BASE.URL}/cards/${cardId}`, {
     method: "DELETE",
     headers: BASE.headers,
@@ -122,6 +122,6 @@ export {
   addCard,
   setCardLike,
   removeCardLike,
-  cardDeleting,
+  removeCard,
   editAvatar,
 };

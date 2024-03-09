@@ -21,7 +21,15 @@ const popupImageCaption = popupImage.querySelector(".popup__caption");
 const formNewCard = popupTypeNewCard.querySelector(".popup__form");
 const formEditAvatar = popupTypeEditAvatar.querySelector(".popup__form");
 const avatarInput = formEditAvatar.querySelector(".popup__input_type_avatar");
-const formButton = formEditAvatar.querySelector(".popup__button");
+const profileFormSubmitButton = document.querySelector(
+  ".popup_type_edit .popup__button"
+);
+const cardFormSubmitButton = document.querySelector(
+  ".popup_type_new-card .popup__button"
+);
+const avatarFormSubmitButton = document.querySelector(
+  ".popup_type_edit_avatar .popup__button"
+);
 const formEditProfile = popupEdit.querySelector(".popup__form");
 const closeButtonList = document.querySelectorAll(".popup__close");
 const nameInfo = document.querySelector(".popup__input_type_name");
@@ -31,6 +39,8 @@ const descriptionInfo = document.querySelector(
 const profileImage = document.querySelector(".profile__image");
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
+const placeInfoInput = document.querySelector(".popup__input_type_card-name");
+const cardUrlInput = document.querySelector(".popup__input_type_url");
 
 const validationEnableValidation = {
   formSelector: ".popup__form",
@@ -53,8 +63,7 @@ const setButtonText = (button, text) => {
 const updateProfile = (evt) => {
   evt.preventDefault();
 
-  const formButton = formEditProfile.querySelector(".popup__button");
-  setButtonText(formButton, "Сохранение...");
+  setButtonText(profileFormSubmitButton, "Сохранение...");
 
   const nameInfoValue = nameInfo.value;
   const descriptionInfoValue = descriptionInfo.value;
@@ -73,21 +82,19 @@ const updateProfile = (evt) => {
       console.error("Error updating profile:", error);
     })
     .finally(() => {
-      setButtonText(formButton, "Сохранить");
+      setButtonText(profileFormSubmitButton, "Сохранить");
     });
 };
 
 const addNewPlace = (evt) => {
   evt.preventDefault();
-  const originalButtonText = formButton.textContent;
+  const originalButtonText = cardFormSubmitButton.textContent;
 
-  // Объявление переменных
-  const placeInfoValue = document.querySelector(
-    ".popup__input_type_card-name"
-  ).value;
-  const urlInfoValue = document.querySelector(".popup__input_type_url").value;
+  // Получение значений инпутов
+  const placeInfoValue = placeInfoInput.value;
+  const urlInfoValue = cardUrlInput.value;
 
-  setButtonText(formButton, "Создание...");
+  setButtonText(cardFormSubmitButton, "Создание...");
 
   api
     .addCard({ name: placeInfoValue, link: urlInfoValue })
@@ -98,7 +105,7 @@ const addNewPlace = (evt) => {
         deleteCard,
         openPopupImage,
         userId,
-        api.cardDeleting
+        api.removeCard
       );
       prependCardToDOM(newCardElem);
 
@@ -110,7 +117,7 @@ const addNewPlace = (evt) => {
       console.error("Error adding new place:", error);
     })
     .finally(() => {
-      setButtonText(formButton, originalButtonText);
+      setButtonText(cardFormSubmitButton, originalButtonText);
     });
 };
 
@@ -124,9 +131,10 @@ const openPopupImage = (imageData) => {
 
 const updateAvatar = (evt) => {
   evt.preventDefault();
-  const avatar = avatarInput.value;
 
-  setButtonText(formButton, "Сохранение...");
+  setButtonText(avatarFormSubmitButton, "Сохранение...");
+
+  const avatar = avatarInput.value;
 
   api
     .editAvatar(avatar)
@@ -140,7 +148,7 @@ const updateAvatar = (evt) => {
       console.error(`Ошибка: ${err}`);
     })
     .finally(() => {
-      setButtonText(formButton, "Сохранить");
+      setButtonText(avatarFormSubmitButton, "Сохранить");
     });
 };
 
@@ -159,16 +167,16 @@ document.addEventListener("DOMContentLoaded", () => {
       profileDescription.textContent = userData.about;
 
       // Обработка карточек
-      initialCards.reverse().forEach((cardData) => {
+      initialCards.forEach((cardData) => {
         const cardElem = createCard(
           cardData,
           likeCard,
           deleteCard,
           openPopupImage,
           userId,
-          api.cardDeleting
+          api.removeCard
         );
-        prependCardToDOM(cardElem);
+        cardsContainer.appendChild(cardElem);
       });
     })
     .catch((error) => {

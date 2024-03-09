@@ -62,14 +62,15 @@ const setListeners = (formElement, config) => {
   });
 
   formElement.addEventListener("reset", () => {
-    inputList.forEach((input) =>
-      hideError(
-        input,
-        formElement.querySelector(`.${input.id}-error`),
+    inputList.forEach((input) => {
+      clearValidation(formElement, {
+        inputSelector,
+        submitButtonSelector,
+        inactiveButtonClass,
         inputErrorClass,
-        errorClass
-      )
-    );
+        errorClass,
+      });
+    });
     toggleButtonState(inputList, buttonElement, inactiveButtonClass);
   });
 };
@@ -78,13 +79,9 @@ const hasInvalidInput = (inputList) =>
   inputList.some((input) => !input.validity.valid);
 
 const toggleButtonState = (inputList, buttonElement, inactiveButtonClass) => {
-  if (buttonElement) {
-    buttonElement.disabled = hasInvalidInput(inputList);
-    buttonElement.classList.toggle(
-      inactiveButtonClass,
-      hasInvalidInput(inputList)
-    );
-  }
+  const isDisabled = hasInvalidInput(inputList);
+  buttonElement.disabled = isDisabled;
+  buttonElement.classList.toggle(inactiveButtonClass, isDisabled);
 };
 
 const enableValidation = (config) => {
@@ -92,6 +89,14 @@ const enableValidation = (config) => {
     (formElement) => {
       setListeners(formElement, config);
     }
+  );
+};
+
+const disableButton = (buttonElement, inputList, inactiveButtonClass) => {
+  buttonElement.disabled = hasInvalidInput(inputList);
+  buttonElement.classList.toggle(
+    inactiveButtonClass,
+    hasInvalidInput(inputList)
   );
 };
 
@@ -118,7 +123,7 @@ const clearValidation = (
     );
   });
 
-  toggleButtonState(inputList, buttonElement, inactiveButtonClass);
+  disableButton(buttonElement, inputList, inactiveButtonClass);
 };
 
 export { enableValidation, clearValidation };

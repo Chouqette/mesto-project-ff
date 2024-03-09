@@ -1,9 +1,5 @@
-const popupList = document.querySelectorAll(".popup");
-
-const closePopupByOverlay = (modal, event) => {
-  const preventClosingElements = ["input"];
-
-  if (!preventClosingElements.some((tag) => event.target.closest(tag))) {
+const closePopupByOverlay = (modal, evt) => {
+  if (modal && evt.target.classList.contains("popup")) {
     closeModal(modal);
   }
 };
@@ -18,15 +14,13 @@ const openModal = (modal) => {
   }
 };
 
-popupList.forEach((popup) => {
-  popup.addEventListener("click", (event) => closePopupByOverlay(popup, event));
-});
-
 const closeModal = (modal) => {
   if (modal) {
     modal.classList.remove("popup_is-opened", "popup_is-animated");
     document.removeEventListener("keydown", closeEsc);
-    modal.removeEventListener("click", closePopupByOverlay);
+    modal.removeEventListener("click", (event) =>
+      closePopupByOverlay(modal, event)
+    );
   }
 };
 

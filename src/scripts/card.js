@@ -6,8 +6,7 @@ const createCard = (
   likeHandler,
   deleteHandler,
   imageClickHandler,
-  userId,
-  cardDeleting
+  userId
 ) => {
   const cardElem = cardTemplate.cloneNode(true);
   const imageElem = cardElem.querySelector(".card__image");
@@ -34,7 +33,7 @@ const createCard = (
   });
 
   deleteButtonElem.addEventListener("click", (event) => {
-    deleteHandler(event, cardData, cardDeleting);
+    deleteHandler(event, cardData);
   });
 
   if (imageClickHandler) {
@@ -83,11 +82,12 @@ const likeCard = (event, likeButtonElem, cardData, likeCounterElem) => {
     });
 };
 
-const deleteCard = (event, cardData, cardDeleting) => {
+const deleteCard = (event, cardData) => {
   const cardElem = event.target.closest(".card");
   if (cardElem) {
     const cardId = cardData._id;
-    cardDeleting(cardId)
+    api
+      .removeCard(cardId)
       .then(() => {
         cardElem.remove();
       })
