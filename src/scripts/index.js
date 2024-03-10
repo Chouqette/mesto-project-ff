@@ -1,7 +1,7 @@
 import "../pages/index.css";
 import * as api from "./api.js";
 import { createCard, likeCard, deleteCard } from "./card.js";
-import { openModal, closeModal } from "./modal.js";
+import { openModal, closeModal, closePopupByOverlay } from "./modal.js";
 import { enableValidation, clearValidation } from "./validation.js";
 
 // Объявление переменных
@@ -21,6 +21,7 @@ const popupImageCaption = popupImage.querySelector(".popup__caption");
 const formNewCard = popupTypeNewCard.querySelector(".popup__form");
 const formEditAvatar = popupTypeEditAvatar.querySelector(".popup__form");
 const avatarInput = formEditAvatar.querySelector(".popup__input_type_avatar");
+const popups = document.querySelectorAll('.popup');
 const profileFormSubmitButton = document.querySelector(
   ".popup_type_edit .popup__button"
 );
@@ -151,6 +152,10 @@ const updateAvatar = (evt) => {
       setButtonText(avatarFormSubmitButton, "Сохранить");
     });
 };
+
+popups.forEach(popup => {
+    popup.addEventListener('click', evt => closePopupByOverlay(popup, evt));
+});
 
 // Добавление обработчиков событий
 document.addEventListener("DOMContentLoaded", () => {
